@@ -13,16 +13,16 @@ const Name = () => {
 
     const submitHandler = () => {
         if (socket) {
-            sessionStorage.setItem(
-                "user_data",
-                JSON.stringify({ name, id: socket.id, role: type })
-            );
             socket.emit("register", { name, role: type });
+            socket.on("registered", (index) => {
+                sessionStorage.setItem(
+                    "user_data",
+                    JSON.stringify({ name, id: index, role: type })
+                );
+                if (type === "Student") redirect("/loading");
+                else redirect("/setQuestion");
+            });
         }
-        socket.on("registered", () => {
-            if (type === "Student") redirect("/loading");
-            else redirect("/setQuestion");
-        });
     };
 
     return (
