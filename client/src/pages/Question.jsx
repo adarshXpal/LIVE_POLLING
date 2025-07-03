@@ -3,6 +3,7 @@ import { LuAlarmClock } from "react-icons/lu";
 import { IoEyeSharp } from "react-icons/io5";
 import "./Question.css";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../components/SocketComponent";
 
 function safeDivide(a, b) {
     if (b === 0) return 0; // avoid division by zero
@@ -18,7 +19,23 @@ const Question = () => {
     const [option, setOption] = useState([]);
     const [clicks, setClicks] = useState([]);
     const [question, setQuestion] = useState("");
+    const [questionId, setQuestionId] = useState("");
+    const index = JSON.parse(sessionStorage.getItem("user_data")).id;
     const total = clicks.reduce((acc, val) => acc + val, 0);
+    const socket = useSocket();
+
+    useEffect(() => {
+        if (socket) {
+            socket.emit("get_question");
+            socket.on("send_question", ({ question, timer }) => {
+                console.info(question, time);
+                setTime(timer);
+                setQuestion(question.question);
+                setQuestionId(question._id);
+                setOption(question.options.map(({ value }) => value));
+            });
+        }
+    }, [socket]);
 
     useEffect(() => {
         if (time <= 0) return;
@@ -36,6 +53,15 @@ const Question = () => {
         return () => clearInterval(timer);
     }, [time]);
 
+    const submitHandler = () => {
+        if (socket) {
+            socket.emit("submit", { questionId, index });
+            setSubmit(true);
+        } else {
+            alert("Server disconnected");
+        }
+    };
+
     return (
         <div className="question">
             {role == "Teacher" && (
@@ -47,7 +73,7 @@ const Question = () => {
 
             <div className="main">
                 <div className="header">
-                    <div className="title">Question 1</div>
+                    <div className="title">Question</div>
                     {submit == true || (
                         <div className="timer">
                             <LuAlarmClock />
@@ -63,9 +89,7 @@ const Question = () => {
                     )}
                 </div>
                 <div className="question-table">
-                    <div className="question-header">
-                        Which planet is known as the Red Planet?"
-                    </div>
+                    <div className="question-header">{question}</div>
                     <div className="question-content">
                         {role === "Teacher" || submit == true
                             ? option.map((o, i) => (
@@ -141,7 +165,7 @@ const Question = () => {
                         + Ask a new question
                     </div>
                 ) : submit === false ? (
-                    <div className="submit" onClick={() => setSubmit(true)}>
+                    <div className="submit" onClick={submitHandler}>
                         Submit
                     </div>
                 ) : (

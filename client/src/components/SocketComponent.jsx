@@ -20,8 +20,8 @@ const SocketComponent = ({ children }) => {
             alert(msg);
         });
 
-        socket.on("show_question", (id) => {
-            redirect(`/Question?id=${id}`);
+        newSocket.on("show_question", () => {
+            redirect(`/Question`);
         });
 
         return () => newSocket.close();
