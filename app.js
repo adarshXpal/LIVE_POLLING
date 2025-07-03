@@ -50,7 +50,7 @@ io.on("connect", (socket) => {
         students.push(user.name);
         release();
       }
-      socket.emit("registered", student.length - 1);
+      socket.emit("registered", students.length - 1);
     } catch (err) {
       console.error("Registration error:", err);
       socket.emit("error", "Registration failed");
