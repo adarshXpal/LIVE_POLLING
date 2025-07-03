@@ -13,7 +13,14 @@ const Home = () => {
     useEffect(() => {
         if (socket) {
             socket.emit("get_teacher");
-            socket.on("send_teacher", (t) => setTeacher(t));
+            socket.on("send_teacher", (t) => {
+                setActive(0);
+                setTeacher(t);
+            });
+            socket.on("teacher-register", (t) => {
+                setActive(0);
+                setTeacher(t);
+            });
         }
     }, [socket]);
 

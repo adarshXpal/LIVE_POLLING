@@ -12,7 +12,7 @@ function safeDivide(a, b) {
 
 const Question = () => {
     const redirect = useNavigate();
-    const role = JSON.parse(sessionStorage.getItem("user_data")).role;
+    const role = JSON.parse(sessionStorage.getItem("user_data") || "").role;
     const [submit, setSubmit] = useState(false);
     const [active, setActive] = useState(null);
     const [time, setTime] = useState(60);
@@ -20,22 +20,37 @@ const Question = () => {
     const [clicks, setClicks] = useState([]);
     const [question, setQuestion] = useState("");
     const [questionId, setQuestionId] = useState("");
-    const index = JSON.parse(sessionStorage.getItem("user_data")).id;
-    const total = clicks.reduce((acc, val) => acc + val, 0);
-    const socket = useSocket();
+    const [totalStudents, setTotalStudent] = useState(0);
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
+        setTotal(clicks.reduce((acc, v) => acc + v, 0));
+    }, [clicks]);
+
+    const socket = useSocket();
+    console.log(total);
+    useEffect(() => {
         if (socket) {
-            socket.emit("get_question");
-            socket.on("send_question", ({ question, timer }) => {
-                console.info(question, time);
-                setTime(timer);
-                setQuestion(question.question);
-                setQuestionId(question._id);
-                setOption(question.options.map(({ value }) => value));
+            if (!submit) {
+                socket.emit("get_question");
+                socket.on("send_question", ({ question, timer }) => {
+                    console.info(question, timer);
+                    setTime(timer);
+                    setQuestion(question.question);
+                    setQuestionId(question._id);
+                    setOption(question.options.map(({ value }) => value));
+                });
+            }
+            socket.emit('get_results');
+            socket.on("results", ({ resultCount, totalStudent }) => {
+                console.log(resultCount, totalStudent, total, submit);
+                if (role === "Teacher" || submit) {
+                    setClicks(resultCount);
+                    setTotalStudent(totalStudent);
+                }
             });
         }
-    }, [socket]);
+    }, [socket, submit, total]);
 
     useEffect(() => {
         if (time <= 0) return;
@@ -54,9 +69,9 @@ const Question = () => {
     }, [time]);
 
     const submitHandler = () => {
+        setSubmit(true);
         if (socket) {
-            socket.emit("submit", { questionId, index });
-            setSubmit(true);
+            socket.emit("submit", { questionId, index: active });
         } else {
             alert("Server disconnected");
         }
@@ -161,8 +176,15 @@ const Question = () => {
                     <div
                         className="submit"
                         onClick={() => redirect("/setQuestion")}
+                        style={{
+                            cursor:
+                                total === totalStudents || time == 0
+                                    ? "cursor"
+                                    : "not-allowed",
+                        }}
                     >
-                        + Ask a new question
+                        {console.log(total, totalStudents, time)}+ Ask a new
+                        question
                     </div>
                 ) : submit === false ? (
                     <div className="submit" onClick={submitHandler}>

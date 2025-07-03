@@ -29,7 +29,7 @@ let students = []; // Renamed for clarity
 let messages = [];
 let currQuestion = null;
 let timer = 0;
-setTimeout(() => {
+setInterval(() => {
   if (timer > 0) {
     timer--;
   }
@@ -52,12 +52,14 @@ io.on("connect", (socket) => {
 
       if (user.role === "Teacher") {
         teacher = { name: user.name, socketId: socket.id };
+        io.emit("teacher-register", students.length - 1);
       } else {
         const release = await studentMutex.acquire();
         students.push(user.name);
         release();
       }
       socket.emit("registered", students.length - 1);
+      
     } catch (err) {
       console.error("Registration error:", err);
       socket.emit("error", "Registration failed");
@@ -77,7 +79,7 @@ io.on("connect", (socket) => {
       const addedQuestion = await questionModel.create(ques);
       currQuestion = addedQuestion;
       timer = ques.time;
-      io.emit("show_question");
+      io.emit("show_question", currQuestion._id);
     } catch (err) {
       console.error("Error adding question:", err);
       socket.emit("error", "Failed to add question");
@@ -87,7 +89,8 @@ io.on("connect", (socket) => {
   socket.on("get_question", () => {
     socket.emit("send_question", {
       question: currQuestion,
-      timer
+      timer,
+      totalStudent: students.length
     });
   })
 

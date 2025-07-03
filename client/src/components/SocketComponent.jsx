@@ -11,18 +11,24 @@ const SocketComponent = ({ children }) => {
     const [socket, setSocket] = useState(null);
     const redirect = useNavigate();
     console.log("socket: ", socket);
+
+    if (socket) {
+        socket.on("error", (msg) => {
+            alert(msg);
+        });
+
+        socket.on("show_question", (id) => {
+            const user = sessionStorage.getItem("user_data");
+            if (user) {
+                redirect(`/Question?id=${id}`);
+            }
+        });
+    }
     useEffect(() => {
         const newSocket = io({
             path: "/api",
         });
         setSocket(newSocket);
-        newSocket.on("error", (msg) => {
-            alert(msg);
-        });
-
-        newSocket.on("show_question", () => {
-            redirect(`/Question`);
-        });
 
         return () => newSocket.close();
     }, []);
