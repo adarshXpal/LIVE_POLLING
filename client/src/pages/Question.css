@@ -1,0 +1,125 @@
+.question {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.question .history {
+    padding: 17px 70px;
+    background: #8f64e1;
+    border-radius: 34px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    position: absolute;
+    top: 60px;
+    right: 60px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.question .main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 737px;
+}
+
+.question .main .header {
+    align-self: flex-start;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.question .main .header .title {
+    font-weight: 600;
+    font-size: 22px;
+}
+
+.question .main .header .timer {
+    font-weight: 600;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.question .main .question-table {
+    border-radius: 9px;
+    overflow: hidden;
+    border-left: 1px solid #af8ff1;
+    border-right: 1px solid #af8ff1;
+    border-bottom: 1px solid #af8ff1;
+    margin-bottom: 1rem;
+}
+
+.question .main .question-table .question-header {
+    background: linear-gradient(90deg, #343434 0%, #6e6e6e 100%);
+    padding: 20px;
+    color: white;
+    font-weight: 600;
+}
+.question .main .question-table .question-content {
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.question .main .question-table .question-content .question-options {
+    width: 678px;
+    padding: 13px 21px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+}
+
+.question .main .question-table .question-content .question-options:hover {
+    border: 1.5px solid #8f64e1 !important;
+}
+
+.question .main .question-table .question-content .question-options .index {
+    padding: 9px 12px;
+    text-align: center;
+    font-size: 12px;
+    color: white;
+    border-radius: 50%;
+}
+.question .main .question-table .question-content .question-options .percent {
+    position: absolute;
+    right: 10px;
+}
+.question .main .question-table .question-content .question-options .bg {
+    position: absolute;
+    background: #6766d5;
+    left: 0;
+    height: 100%;
+    z-index: -1;
+    border-radius: 6px;
+}
+
+.question .main .submit {
+    background: linear-gradient(99.18deg, #8f64e1 -46.89%, #1d68bd 223.45%);
+    padding: 17px 70px;
+    border-radius: 34px;
+    color: white;
+    align-self: flex-end;
+    cursor: pointer;
+}
+
+.question .main .wait {
+    text-align: center;
+    font-weight: 600;
+    font-size: 24px;
+}

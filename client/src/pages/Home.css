@@ -1,0 +1,110 @@
+.Home {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.Logo {
+    width: 134px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px;
+    color: #ffffff;
+    background: linear-gradient(to right, #7565d9, #4d0acd);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 24px;
+}
+
+.Heading {
+    text-align: center;
+    max-width: 46.063rem;
+}
+
+.Heading > .Heading1 {
+    font-size: 40px;
+}
+.Heading > .Heading1 > span {
+    font-weight: 600;
+}
+.Heading > .Heading2 {
+    font-size: 19px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.Home > .Choices {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.Home > .Choices > .button {
+    max-width: 387px;
+    padding: 25px;
+    display: flex;
+    gap: 17px;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.Home .Choices .button.Active {
+    border: 2px solid #1d68bd;
+}
+.Home .Choices .button:hover {
+    background-color: #f1f1f1;
+}
+
+.Home > .Choices > .button > .heading {
+    font-size: 23px;
+    font-weight: 600;
+}
+
+.Home > .Choices > .button > .Content {
+    font-size: 16px;
+    color: #454545;
+}
+
+.Home > .submit {
+    margin-top: 2rem;
+    border-radius: 34px;
+    background: linear-gradient(303deg, #1d68bd, #8f64e1);
+    padding: 17px 70px;
+    color: white;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 900px) {
+    .Home > .Choices {
+        flex-direction: column;
+    }
+}
+
+.form_input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 2rem;
+}
+
+.form_input input {
+    width: 500px;
+    font-size: 18px;
+    padding: 15px;
+    background: #f2f2f2;
+    border: none;
+    border-radius: 2px;
+}
+
+@media screen and (max-width: 600px) {
+    .form_input input {
+        width: 250px;
+    }
+}
