@@ -1,11 +1,22 @@
 import { useState } from "react";
 import "./createQuestion.css";
 import { BsStars } from "react-icons/bs";
+import { useSocket } from "../components/SocketComponent";
 
 const CreateQuestion = () => {
     const [question, setQuestion] = useState("Rahul Bajaj");
     const [time, setTime] = useState(60);
     const [options, setOption] = useState([{ value: "", correct: true }]);
+    const socket = useSocket();
+
+    const submitHandler = () => {
+        if (socket) {
+            socket.emit("add_question", { question, options, time });
+        } else {
+            alert("Not Connected with Backend");
+        }
+    };
+
     return (
         <div className="create-question">
             <div className="Logo" style={{ marginLeft: "1rem" }}>
@@ -138,7 +149,9 @@ const CreateQuestion = () => {
                     </div>
                 </div>
             </div>
-            <div className="button">Ask Question</div>
+            <div className="button" onClick={submitHandler}>
+                Ask Question
+            </div>
         </div>
     );
 };

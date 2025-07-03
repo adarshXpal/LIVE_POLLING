@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { socket as S } from "./socket";
+import { useNavigate } from "react-router-dom";
 
 export const useSocket = () => {
     return useContext(S);
@@ -8,6 +9,7 @@ export const useSocket = () => {
 
 const SocketComponent = ({ children }) => {
     const [socket, setSocket] = useState(null);
+    const redirect = useNavigate();
     console.log("socket: ", socket);
     useEffect(() => {
         const newSocket = io({
@@ -16,6 +18,10 @@ const SocketComponent = ({ children }) => {
         setSocket(newSocket);
         newSocket.on("error", (msg) => {
             alert(msg);
+        });
+
+        socket.on("show_question", (id) => {
+            redirect(`/Question?id=${id}`);
         });
 
         return () => newSocket.close();

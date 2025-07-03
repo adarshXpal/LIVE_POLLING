@@ -11,17 +11,13 @@ function safeDivide(a, b) {
 
 const Question = () => {
     const redirect = useNavigate();
-    const [role, setRole] = useState("Student");
+    const role = JSON.parse(sessionStorage.getItem("user_data")).role;
     const [submit, setSubmit] = useState(false);
     const [active, setActive] = useState(null);
     const [time, setTime] = useState(60);
-    const [option, setOption] = useState([
-        "Mars",
-        "Venus",
-        "Jupiter",
-        "Saturn",
-    ]);
-    const [clicks, setClicks] = useState([0, 3, 2, 5]);
+    const [option, setOption] = useState([]);
+    const [clicks, setClicks] = useState([]);
+    const [question, setQuestion] = useState("");
     const total = clicks.reduce((acc, val) => acc + val, 0);
 
     useEffect(() => {
