@@ -27,6 +27,13 @@ const studentMutex = new Mutex();
 let teacher = null;
 let students = []; // Renamed for clarity
 let messages = [];
+let currQuestion = null;
+let timer = 0;
+setTimeout(() => {
+  if (timer > 0) {
+    timer--;
+  }
+}, 1000);
 
 io.on("connect", (socket) => {
   console.log(`Connected: ${socket.id}`);
@@ -68,13 +75,21 @@ io.on("connect", (socket) => {
       }
 
       const addedQuestion = await questionModel.create(ques);
-      socket.emit("added");
-      io.emit("show_question", addedQuestion);
+      currQuestion = addedQuestion;
+      timer = ques.time;
+      io.emit("show_question");
     } catch (err) {
       console.error("Error adding question:", err);
       socket.emit("error", "Failed to add question");
     }
   });
+  //Sending currQuestion;
+  socket.on("get_question", () => {
+    socket.emit("send_question", {
+      question: currQuestion,
+      timer
+    });
+  })
 
   // Show Question Page: Submit answer
   socket.on("submit", async (response) => {
