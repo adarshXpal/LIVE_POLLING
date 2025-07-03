@@ -49,8 +49,15 @@ const Home = () => {
                     </div>
                 </div>
                 <div
-                    className={`button ${active === 1 && "Active"}`}
-                    onClick={() => setActive(1)}
+                    className={`button ${
+                        active === 1 && teacher == null && "Active"
+                    }`}
+                    style={{ cursor: !teacher ? "pointer" : "not-allowed" }}
+                    onClick={() => {
+                        if (!teacher) {
+                            setActive(1);
+                        }
+                    }}
                 >
                     <div className="heading">I’m a Teacher</div>
                     <div className="Content">

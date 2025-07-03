@@ -14,6 +14,9 @@ const SocketComponent = ({ children }) => {
             path: "/api",
         });
         setSocket(newSocket);
+        newSocket.on("error", (msg) => {
+            alert(msg);
+        });
 
         return () => newSocket.close();
     }, []);
