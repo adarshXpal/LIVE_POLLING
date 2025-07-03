@@ -59,7 +59,7 @@ io.on("connect", (socket) => {
         release();
       }
       socket.emit("registered", students.length - 1);
-      
+
     } catch (err) {
       console.error("Registration error:", err);
       socket.emit("error", "Registration failed");
@@ -121,7 +121,14 @@ io.on("connect", (socket) => {
       socket.emit("error", "Failed to submit response");
     }
   });
-
+  // custom Count !!
+  socket.on("get_result", () => {
+    const optArray = resQuestion.options.map((opt) => opt.count);
+    socket.emit("results", {
+      resultCount: optArray,
+      totalStudent: students.length,
+    });
+  });
   // View History Page: Fetch all questions
   socket.on("show_history", async () => {
     try {
