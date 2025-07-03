@@ -8,14 +8,14 @@ export const useSocket = () => {
 
 const SocketComponent = ({ children }) => {
     const [socket, setSocket] = useState(null);
-
+    console.log("socket: ", socket);
     useEffect(() => {
-        setSocket(
-            io("http://localhost:5000", {
-                transports: ["websocket"], // or ['polling', 'websocket']
-                autoConnect: false,
-            })
-        );
+        const newSocket = io({
+            path: "/api",
+        });
+        setSocket(newSocket);
+
+        return () => newSocket.close();
     }, []);
 
     return <S.Provider value={socket}>{children}</S.Provider>;

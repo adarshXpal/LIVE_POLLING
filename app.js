@@ -28,7 +28,7 @@ let teacher = null;
 let students = []; // Renamed for clarity
 let messages = [];
 
-io.on("connection", (socket) => {
+io.on("connect", (socket) => {
     console.log(`Connected: ${socket.id}`);
 
     // Login Page: Send teacher data
@@ -154,7 +154,7 @@ io.on("connection", (socket) => {
         io.emit("message", message);
     });
 
-    socket.on("get_message", message);
+    // socket.on("get_message", message);
 
     // Cleanup on disconnect
     socket.on("disconnect", () => {

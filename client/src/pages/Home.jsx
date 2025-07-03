@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
 import { BsStars } from "react-icons/bs";
+import { useSocket } from "../components/SocketComponent";
 
 const Home = () => {
     const [active, setActive] = useState(0);
     const redirect = useNavigate();
+    const [teacher, setTeacher] = useState(null);
+    const socket = useSocket();
+    console.log(teacher);
+    useEffect(() => {
+        if (socket) {
+            socket.emit("get_teacher");
+            socket.on("send_teacher", (t) => setTeacher(t));
+        }
+    }, [socket]);
 
     const submitHandler = () => {
         redirect(`/name?type=${active ? "Teacher" : "Student"}`);
