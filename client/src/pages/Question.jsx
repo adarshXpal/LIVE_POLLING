@@ -13,13 +13,13 @@ function safeDivide(a, b) {
 const Question = () => {
     const redirect = useNavigate();
     const role = JSON.parse(sessionStorage.getItem("user_data") || "").role;
+    const [questionId, setQuestionId] = useState("");
     const [submit, setSubmit] = useState(false);
     const [active, setActive] = useState(null);
     const [time, setTime] = useState(60);
     const [option, setOption] = useState([]);
     const [clicks, setClicks] = useState([]);
     const [question, setQuestion] = useState("");
-    const [questionId, setQuestionId] = useState("");
     const [totalStudents, setTotalStudent] = useState(0);
     const [total, setTotal] = useState(0);
 
@@ -28,7 +28,6 @@ const Question = () => {
     }, [clicks]);
 
     const socket = useSocket();
-    console.log(total);
     useEffect(() => {
         if (socket) {
             if (!submit) {
@@ -38,10 +37,13 @@ const Question = () => {
                     setTime(timer);
                     setQuestion(question.question);
                     setQuestionId(question._id);
+                    const sub = sessionStorage.getItem(question._id);
+                    console.log(sub);
+                    setSubmit(sub == true || sub == "true");
                     setOption(question.options.map(({ value }) => value));
                 });
             }
-            socket.emit('get_results');
+            socket.emit("get_result");
             socket.on("results", ({ resultCount, totalStudent }) => {
                 console.log(resultCount, totalStudent, total, submit);
                 if (role === "Teacher" || submit) {
@@ -71,6 +73,7 @@ const Question = () => {
     const submitHandler = () => {
         setSubmit(true);
         if (socket) {
+            sessionStorage.setItem(questionId, true);
             socket.emit("submit", { questionId, index: active });
         } else {
             alert("Server disconnected");
@@ -178,13 +181,12 @@ const Question = () => {
                         onClick={() => redirect("/setQuestion")}
                         style={{
                             cursor:
-                                total === totalStudents || time == 0
-                                    ? "cursor"
+                                total == totalStudents || time == 0
+                                    ? "pointer"
                                     : "not-allowed",
                         }}
                     >
-                        {console.log(total, totalStudents, time)}+ Ask a new
-                        question
+                        + Ask a new question
                     </div>
                 ) : submit === false ? (
                     <div className="submit" onClick={submitHandler}>
