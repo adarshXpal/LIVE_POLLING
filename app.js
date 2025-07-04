@@ -124,7 +124,7 @@ io.on("connect", (socket) => {
   });
   // custom Count !!
   socket.on("get_result", () => {
-    const optArray = currQuestion.options.map((opt) => opt.count);
+    const optArray = currQuestion.options?.map((opt) => opt.count);
     socket.emit("results", {
       resultCount: optArray,
       totalStudent: students.length,
