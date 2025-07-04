@@ -9,7 +9,6 @@ require("dotenv").config();
 require("./config/mongoose.connection.js");
 
 const app = express();
-app.use(express.static(path.join(__dirname, "client/build")));
 
 const server = http.createServer(app);
 const io = socket(server, {
@@ -17,6 +16,7 @@ const io = socket(server, {
   path: "/api",
 });
 
+app.use(express.static(path.join(__dirname, "client/build")));
 // Serve React app only for routes that do not start with /api
 app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
