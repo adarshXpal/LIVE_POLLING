@@ -8,7 +8,7 @@ import { useSocket } from "./SocketComponent";
 const ChatComponent = () => {
     const [open, setOpen] = useState(false);
     const { role, id, name } =
-        JSON.parse(sessionStorage.getItem("user_data") || "") || {};
+        JSON.parse(sessionStorage.getItem("user_data") || "{}") || {};
     const [select, setSelect] = useState(0);
     const [participants, setParticipants] = useState([]);
     const [messages, setMessages] = useState([]);

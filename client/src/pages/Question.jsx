@@ -14,7 +14,7 @@ const Question = () => {
     const redirect = useNavigate();
     const [searchParam] = useSearchParams();
     const id = searchParam.get("id");
-    const role = JSON.parse(sessionStorage.getItem("user_data") || "").role;
+    const role = JSON.parse(sessionStorage.getItem("user_data") || "{}").role;
     const [questionId, setQuestionId] = useState("");
     const [submit, setSubmit] = useState(false);
     const [active, setActive] = useState(null);
