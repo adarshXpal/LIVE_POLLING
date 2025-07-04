@@ -6,7 +6,7 @@ import { IoSend } from "react-icons/io5";
 
 const ChatComponent = () => {
     const [open, setOpen] = useState(false);
-    const [role, setRole] = useState("Student");
+    const role = JSON.parse(sessionStorage.getItem("user_data") || "").role;
     const [select, setSelect] = useState(0);
     const [participants] = useState([
         { name: "Pushpender Rautela" },

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LuAlarmClock } from "react-icons/lu";
 import { IoEyeSharp } from "react-icons/io5";
 import "./Question.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSocket } from "../components/SocketComponent";
 
 function safeDivide(a, b) {
@@ -12,6 +12,8 @@ function safeDivide(a, b) {
 
 const Question = () => {
     const redirect = useNavigate();
+    const [searchParam] = useSearchParams();
+    const id = searchParam.get("id");
     const role = JSON.parse(sessionStorage.getItem("user_data") || "").role;
     const [questionId, setQuestionId] = useState("");
     const [submit, setSubmit] = useState(false);
@@ -29,23 +31,26 @@ const Question = () => {
 
     const socket = useSocket();
     useEffect(() => {
+        console.log(id);
+        if (socket) {
+            socket.emit("get_question");
+        }
+    }, [id]);
+    useEffect(() => {
         if (socket) {
             if (!submit) {
-                socket.emit("get_question");
                 socket.on("send_question", ({ question, timer }) => {
-                    console.info(question, timer);
+                    setActive(null);
                     setTime(timer);
                     setQuestion(question.question);
                     setQuestionId(question._id);
                     const sub = sessionStorage.getItem(question._id);
-                    console.log(sub);
                     setSubmit(sub == true || sub == "true");
                     setOption(question.options.map(({ value }) => value));
                 });
             }
             socket.emit("get_result");
             socket.on("results", ({ resultCount, totalStudent }) => {
-                console.log(resultCount, totalStudent, total, submit);
                 if (role === "Teacher" || submit) {
                     setClicks(resultCount);
                     setTotalStudent(totalStudent);
@@ -178,7 +183,10 @@ const Question = () => {
                 {role === "Teacher" ? (
                     <div
                         className="submit"
-                        onClick={() => redirect("/setQuestion")}
+                        onClick={() => {
+                            if (total == totalStudents || time == 0)
+                                redirect("/setQuestion");
+                        }}
                         style={{
                             cursor:
                                 total == totalStudents || time == 0
