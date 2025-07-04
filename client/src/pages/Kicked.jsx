@@ -1,5 +1,8 @@
 import { BsStars } from "react-icons/bs";
+import { useSocket } from "../components/SocketComponent";
 const Kicked = () => {
+    const socket = useSocket();
+    if (socket) socket.disconnect();
     return (
         <div className="kicked">
             <div className="Logo" style={{ marginLeft: "1rem" }}>

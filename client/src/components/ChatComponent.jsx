@@ -1,19 +1,35 @@
 import { Outlet } from "react-router-dom";
 import "./chat.css";
 import { BsChatRight } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoSend } from "react-icons/io5";
+import { useSocket } from "./SocketComponent";
 
 const ChatComponent = () => {
     const [open, setOpen] = useState(false);
-    const role = JSON.parse(sessionStorage.getItem("user_data") || "").role;
+    const { role, id, name } =
+        JSON.parse(sessionStorage.getItem("user_data") || "") || {};
     const [select, setSelect] = useState(0);
-    const [participants] = useState([
-        { name: "Pushpender Rautela" },
-        { name: "Rijul Zalpuri" },
-        { name: "Nadeem N" },
-        { name: "Ashwin Sharma" },
-    ]);
+    const [participants, setParticipants] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState("");
+    const socket = useSocket();
+    console.log(participants);
+
+    useEffect(() => {
+        if (socket) {
+            socket.emit("show_participants");
+            socket.on("participants", (students) => {
+                setParticipants(students);
+            });
+
+            socket.emit("get_message");
+            socket.on("message", (message) => {
+                setMessages(message);
+            });
+        }
+    }, [socket]);
+
     return (
         <>
             <Outlet />
@@ -50,32 +66,24 @@ const ChatComponent = () => {
                         <section>
                             <div className="overflow">
                                 {select == 0 ? (
-                                    <>
-                                        <div className="chat-other">
-                                            <div className="chat-author">
-                                                User 1
+                                    messages.map(
+                                        ({ name: n, id: i, message }) => (
+                                            <div
+                                                className={
+                                                    i == id
+                                                        ? "chat-user"
+                                                        : "chat-other"
+                                                }
+                                            >
+                                                <div className="chat-author">
+                                                    {n}
+                                                </div>
+                                                <div className="chat-chat">
+                                                    {message}
+                                                </div>
                                             </div>
-                                            <div className="chat-chat">
-                                                Hey there, how can I help?
-                                            </div>
-                                        </div>
-                                        <div className="chat-user">
-                                            <div className="chat-author">
-                                                User 2
-                                            </div>
-                                            <div className="chat-chat">
-                                                Nothing bro..just chill!!
-                                            </div>
-                                        </div>
-                                        <div className="chat-other">
-                                            <div className="chat-author">
-                                                User 3
-                                            </div>
-                                            <div className="chat-chat">
-                                                Okay
-                                            </div>
-                                        </div>
-                                    </>
+                                        )
+                                    )
                                 ) : (
                                     <>
                                         <header>
@@ -84,11 +92,20 @@ const ChatComponent = () => {
                                                 <div>Action</div>
                                             )}
                                         </header>
-                                        {participants.map(({ name }) => (
+                                        {participants.map((name, i) => (
                                             <div className="participants">
                                                 <div>{name}</div>
                                                 {role === "Teacher" && (
-                                                    <div className="button">
+                                                    <div
+                                                        className="button"
+                                                        onClick={() => {
+                                                            if (socket)
+                                                                socket.emit(
+                                                                    "kick_student",
+                                                                    i
+                                                                );
+                                                        }}
+                                                    >
                                                         Kick out
                                                     </div>
                                                 )}
@@ -103,9 +120,23 @@ const ChatComponent = () => {
                                 <input
                                     type="text"
                                     placeholder="Type your message here"
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
                                 />
                                 <div className="button">
-                                    <IoSend size={"25px"} />
+                                    <IoSend
+                                        size={"25px"}
+                                        onClick={() => {
+                                            if (socket && input != "") {
+                                                socket.emit("send_message", {
+                                                    id,
+                                                    name,
+                                                    message: input,
+                                                });
+                                                setInput("");
+                                            }
+                                        }}
+                                    />
                                 </div>
                             </form>
                         )}

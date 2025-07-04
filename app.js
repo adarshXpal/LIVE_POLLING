@@ -57,6 +57,7 @@ io.on("connect", (socket) => {
         const release = await studentMutex.acquire();
         students.push(user.name);
         release();
+        io.emit("participants", students);
       }
       socket.emit("registered", students.length - 1);
 
@@ -156,17 +157,14 @@ io.on("connect", (socket) => {
   });
 
   // Kick Student: Remove a student by socket ID
-  socket.on("kick_student", async (socketIdToRemove) => {
+  socket.on("kick_student", async (id) => {
     try {
-      if (teacher?.socketId !== socket.id) {
-        return socket.emit("error", "Only teachers can kick students");
-      }
 
       const release = await studentMutex.acquire();
-      students = students.filter((s) => s.socketId !== socketIdToRemove);
+      students.splice(id, 1);
       release();
 
-      socket.emit("student_kicked");
+      io.emit("student_kicked", id);
       io.emit("participants", students);
     } catch (err) {
       console.error("Error kicking student:", err);
@@ -177,10 +175,12 @@ io.on("connect", (socket) => {
   //Chat System
   socket.on("send_message", (message) => {
     messages.push(message);
-    io.emit("message", message);
+    io.emit("message", messages);
   });
 
-  // socket.on("get_message", message);
+  socket.on("get_message", () => {
+    socket.emit("message", messages);
+  });
 
   // Cleanup on disconnect
   socket.on("disconnect", () => {

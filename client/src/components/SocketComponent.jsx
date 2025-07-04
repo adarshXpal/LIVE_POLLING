@@ -27,6 +27,14 @@ const SocketComponent = ({ children }) => {
                 redirect(`/Question?id=${id}`);
             }
         });
+        newSocket.on("student_kicked", (i) => {
+            const user = sessionStorage.getItem("user_data");
+            if (user) {
+                const { id } = JSON.parse(user);
+                sessionStorage.clear();
+                if (id == i) redirect(`/Kicked`);
+            }
+        });
         return () => newSocket.close();
     }, []);
 
