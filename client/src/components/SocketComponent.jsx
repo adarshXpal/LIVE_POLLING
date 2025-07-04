@@ -31,8 +31,10 @@ const SocketComponent = ({ children }) => {
             const user = sessionStorage.getItem("user_data");
             if (user) {
                 const { id } = JSON.parse(user);
-                sessionStorage.clear();
-                if (id == i) redirect(`/Kicked`);
+                if (id == i) {
+                    sessionStorage.clear();
+                    redirect(`/Kicked`);
+                }
             }
         });
         return () => newSocket.close();
