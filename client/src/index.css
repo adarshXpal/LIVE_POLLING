@@ -31,3 +31,11 @@
         transform: rotate(360deg);
     }
 }
+
+.history .Table {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}

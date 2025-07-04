@@ -8,6 +8,7 @@ import Loading from "./pages/Loading";
 import Question from "./pages/Question";
 import ChatComponent from "./components/ChatComponent";
 import SocketComponent from "./components/SocketComponent";
+import History from "./pages/History";
 
 const router = createBrowserRouter([
     {
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
             },
             { path: "/Kicked", element: <Kicked /> },
             { path: "/Loading", element: <Loading /> },
-            { path: "/History", element: <></> },
+            { path: "/History", element: <History /> },
         ],
     },
 ]);

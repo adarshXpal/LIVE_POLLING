@@ -88,7 +88,7 @@ const Question = () => {
     return (
         <div className="question">
             {role == "Teacher" && (
-                <div className="history">
+                <div className="history" onClick={() => redirect("/History")}>
                     <IoEyeSharp size={"30px"} />
                     <span>View Poll history</span>
                 </div>
