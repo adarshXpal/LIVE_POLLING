@@ -133,9 +133,9 @@ io.on("connect", (socket) => {
     // View History Page: Fetch all questions
     socket.on("show_history", async () => {
         try {
-            // if (teacher?.socketId !== socket.id) {
-            //   return socket.emit("error", "Unauthorized");
-            // }
+            if (teacher?.socketId !== socket.id) {
+                return socket.emit("error", "Unauthorized");
+            }
 
             const questions = await questionModel.find();
             socket.emit("history", questions);
